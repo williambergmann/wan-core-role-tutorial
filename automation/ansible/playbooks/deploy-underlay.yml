@@ -1,0 +1,52 @@
+# Deploy OSPF Underlay — Configures OSPF on all fabric devices
+# Usage: ansible-playbook playbooks/deploy-underlay.yml
+---
+- name: Deploy OSPF Underlay
+  hosts: fabric
+  gather_facts: no
+
+  tasks:
+    - name: Enable OSPF feature
+      cisco.nxos.nxos_feature:
+        feature: ospf
+        state: enabled
+
+    - name: Configure OSPF process
+      cisco.nxos.nxos_config:
+        lines:
+          - router-id {{ rid }}
+        parents: router ospf {{ ospf_process_id }}
+
+    - name: Configure loopback for OSPF
+      cisco.nxos.nxos_config:
+        lines:
+          - ip address {{ rid }}/32
+          - ip router ospf {{ ospf_process_id }} area {{ ospf_area }}
+        parents: interface loopback0
+
+    - name: Configure fabric interfaces for OSPF
+      cisco.nxos.nxos_config:
+        lines:
+          - mtu {{ fabric_mtu }}
+          - ip router ospf {{ ospf_process_id }} area {{ ospf_area }}
+          - ip ospf network point-to-point
+          - no shutdown
+        parents: "interface {{ item }}"
+      loop: "{{ fabric_interfaces | default([]) }}"
+      when: fabric_interfaces is defined
+
+    - name: Enable BFD on OSPF
+      cisco.nxos.nxos_config:
+        lines:
+          - bfd
+        parents: router ospf {{ ospf_process_id }}
+
+    - name: Verify OSPF neighbors
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip ospf neighbor
+      register: ospf_output
+
+    - name: Display OSPF neighbor state
+      debug:
+        msg: "{{ ospf_output.stdout_lines }}"

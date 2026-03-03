@@ -1,0 +1,9 @@
+# Spine-specific variables
+---
+bgp_role: route_reflector
+
+# Spines don't have VTEPs
+is_vtep: false
+
+# Spine-leaf P2P links (example — customize per spine)
+# These are populated from the topology

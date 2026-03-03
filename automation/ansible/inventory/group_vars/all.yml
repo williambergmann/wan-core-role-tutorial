@@ -1,0 +1,24 @@
+# Group variables for all devices
+---
+# OSPF
+ospf_process_id: 1
+ospf_area: 0
+
+# BFD
+bfd_interval: 300
+bfd_multiplier: 3
+
+# MTU
+fabric_mtu: 9214
+
+# NTP
+ntp_servers:
+  - 10.0.0.1
+  - 10.0.0.2
+
+# Syslog
+syslog_servers:
+  - 10.0.0.10
+
+# SNMP
+snmp_community: "{{ vault_snmp_community }}"

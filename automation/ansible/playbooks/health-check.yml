@@ -1,0 +1,122 @@
+# Fabric Health Check — Comprehensive health validation
+# Usage: ansible-playbook playbooks/health-check.yml
+#
+# Checks:
+#   1. All OSPF neighbors FULL
+#   2. All BGP EVPN peers Established
+#   3. All VXLAN tunnels UP
+#   4. All VNIs operational
+#   5. No interface errors
+#   6. BFD sessions UP
+---
+- name: Fabric Health Check
+  hosts: fabric
+  gather_facts: no
+
+  tasks:
+    # ═══════════════════════════════════════════
+    # CHECK 1: OSPF Neighbors
+    # ═══════════════════════════════════════════
+    - name: "CHECK 1: OSPF neighbor state"
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip ospf neighbor
+      register: ospf_check
+
+    - name: Validate OSPF — no neighbors stuck
+      assert:
+        that:
+          - "'INIT' not in ospf_check.stdout[0]"
+          - "'EXSTART' not in ospf_check.stdout[0]"
+          - "'EXCHANGE' not in ospf_check.stdout[0]"
+        fail_msg: "WARNING: OSPF neighbors not all FULL on {{ inventory_hostname }}"
+        success_msg: "✅ OSPF neighbors healthy on {{ inventory_hostname }}"
+      ignore_errors: yes
+
+    # ═══════════════════════════════════════════
+    # CHECK 2: BGP EVPN Peers
+    # ═══════════════════════════════════════════
+    - name: "CHECK 2: BGP EVPN summary"
+      cisco.nxos.nxos_command:
+        commands:
+          - show bgp l2vpn evpn summary
+      register: bgp_check
+
+    - name: Display BGP state
+      debug:
+        msg: "{{ bgp_check.stdout_lines[0] }}"
+
+    # ═══════════════════════════════════════════
+    # CHECK 3: VXLAN Tunnels
+    # ═══════════════════════════════════════════
+    - name: "CHECK 3: NVE peer state"
+      cisco.nxos.nxos_command:
+        commands:
+          - show nve peers
+      register: nve_check
+      when: is_vtep | default(false)
+
+    - name: Display VXLAN tunnels
+      debug:
+        msg: "{{ nve_check.stdout_lines[0] }}"
+      when: is_vtep | default(false)
+
+    # ═══════════════════════════════════════════
+    # CHECK 4: VNI Status
+    # ═══════════════════════════════════════════
+    - name: "CHECK 4: VNI status"
+      cisco.nxos.nxos_command:
+        commands:
+          - show nve vni
+      register: vni_check
+      when: is_vtep | default(false)
+
+    - name: Validate VNIs — all UP
+      assert:
+        that:
+          - "'Down' not in vni_check.stdout[0]"
+        fail_msg: "WARNING: Some VNIs are DOWN on {{ inventory_hostname }}"
+        success_msg: "✅ All VNIs UP on {{ inventory_hostname }}"
+      when: is_vtep | default(false)
+      ignore_errors: yes
+
+    # ═══════════════════════════════════════════
+    # CHECK 5: Interface Errors
+    # ═══════════════════════════════════════════
+    - name: "CHECK 5: Interface error counters"
+      cisco.nxos.nxos_command:
+        commands:
+          - show interface counters errors
+      register: error_check
+
+    - name: Display interface errors
+      debug:
+        msg: "{{ error_check.stdout_lines[0][-10:] }}"
+
+    # ═══════════════════════════════════════════
+    # CHECK 6: BFD Sessions
+    # ═══════════════════════════════════════════
+    - name: "CHECK 6: BFD neighbors"
+      cisco.nxos.nxos_command:
+        commands:
+          - show bfd neighbors
+      register: bfd_check
+
+    - name: Validate BFD — no DOWN sessions
+      assert:
+        that:
+          - "'Down' not in bfd_check.stdout[0]"
+        fail_msg: "WARNING: BFD sessions DOWN on {{ inventory_hostname }}"
+        success_msg: "✅ BFD sessions healthy on {{ inventory_hostname }}"
+      ignore_errors: yes
+
+    # ═══════════════════════════════════════════
+    # SUMMARY
+    # ═══════════════════════════════════════════
+    - name: Health check complete
+      debug:
+        msg: |
+          ══════════════════════════════════════
+          Health Check Complete: {{ inventory_hostname }}
+          ══════════════════════════════════════
+          Review output above for any warnings.

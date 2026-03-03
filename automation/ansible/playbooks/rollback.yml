@@ -1,0 +1,68 @@
+# Emergency Rollback — Reverts to a saved checkpoint
+# Usage: ansible-playbook playbooks/rollback.yml -e "checkpoint=pre_change"
+#
+# WARNING: This will revert the running configuration to a checkpoint.
+# Only use during active maintenance windows when a change has gone wrong.
+---
+- name: Emergency Rollback
+  hosts: all_network
+  gather_facts: no
+  serial: 1  # ONE device at a time for safety
+
+  vars:
+    checkpoint: "{{ checkpoint | mandatory }}"
+
+  vars_prompt:
+    - name: confirm_rollback
+      prompt: "⚠️  ROLLBACK will revert config to checkpoint '{{ checkpoint }}'. Type 'YES' to confirm"
+      private: no
+
+  tasks:
+    - name: Validate confirmation
+      assert:
+        that:
+          - confirm_rollback == "YES"
+        fail_msg: "Rollback cancelled — confirmation not received."
+        success_msg: "Rollback confirmed. Proceeding..."
+
+    - name: Capture current state BEFORE rollback
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip route summary vrf all
+          - show bgp l2vpn evpn summary
+          - show ip ospf neighbor
+      register: pre_rollback_state
+
+    - name: Execute rollback
+      cisco.nxos.nxos_config:
+        lines:
+          - "rollback running-config checkpoint {{ checkpoint }}"
+      register: rollback_result
+
+    - name: Wait for convergence
+      pause:
+        seconds: 30
+        prompt: "Waiting 30s for routing convergence after rollback..."
+
+    - name: Verify state after rollback
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip route summary vrf all
+          - show bgp l2vpn evpn summary
+          - show ip ospf neighbor
+      register: post_rollback_state
+
+    - name: Display rollback results
+      debug:
+        msg: |
+          ══════════════════════════════════════
+          Rollback Results: {{ inventory_hostname }}
+          ══════════════════════════════════════
+          Checkpoint: {{ checkpoint }}
+          
+          BEFORE ROLLBACK:
+          {{ pre_rollback_state.stdout[0] }}
+          
+          AFTER ROLLBACK:
+          {{ post_rollback_state.stdout[0] }}
+          ══════════════════════════════════════

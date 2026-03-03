@@ -1,0 +1,127 @@
+# Module 02: EVPN/VXLAN — Containerlab Topology
+# Single-site leaf-spine fabric for EVPN/VXLAN practice
+#
+# Topology:
+#   2 Spines (Route Reflectors)
+#   3 Leaves (VTEPs)
+#   3 Hosts (Linux containers)
+#
+#        [Spine-1]----[Spine-2]
+#        / |    \     / |    \
+#   [Leaf1] [Leaf2] [Leaf3]
+#      |       |       |
+#   [Host1] [Host2] [Host3]
+#
+# AS 65000 (iBGP with RR)
+# OSPF Area 0 underlay
+
+name: evpn-vxlan-fabric
+
+topology:
+  kinds:
+    linux:
+      image: vrnetlab/vr-nxos:9.3.10
+
+  nodes:
+    # Spines (Route Reflectors)
+    spine-1:
+      kind: linux
+      mgmt-ipv4: 172.20.20.101
+      labels:
+        role: spine
+        asn: "65000"
+
+    spine-2:
+      kind: linux
+      mgmt-ipv4: 172.20.20.102
+      labels:
+        role: spine
+        asn: "65000"
+
+    # Leaves (VTEPs)
+    leaf-1:
+      kind: linux
+      mgmt-ipv4: 172.20.20.111
+      labels:
+        role: leaf
+        asn: "65000"
+
+    leaf-2:
+      kind: linux
+      mgmt-ipv4: 172.20.20.112
+      labels:
+        role: leaf
+        asn: "65000"
+
+    leaf-3:
+      kind: linux
+      mgmt-ipv4: 172.20.20.113
+      labels:
+        role: leaf
+        asn: "65000"
+
+    # Hosts (Linux containers)
+    host-1:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.201
+      labels:
+        role: host
+        vlan: "100"
+
+    host-2:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.202
+      labels:
+        role: host
+        vlan: "100"
+
+    host-3:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.203
+      labels:
+        role: host
+        vlan: "200"
+
+  links:
+    # Spine-Leaf (full mesh)
+    - endpoints: ["spine-1:eth1", "leaf-1:eth1"]
+    - endpoints: ["spine-1:eth2", "leaf-2:eth1"]
+    - endpoints: ["spine-1:eth3", "leaf-3:eth1"]
+    - endpoints: ["spine-2:eth1", "leaf-1:eth2"]
+    - endpoints: ["spine-2:eth2", "leaf-2:eth2"]
+    - endpoints: ["spine-2:eth3", "leaf-3:eth2"]
+
+    # Spine-to-Spine (optional, for inter-spine link)
+    - endpoints: ["spine-1:eth4", "spine-2:eth4"]
+
+    # Host-to-Leaf
+    - endpoints: ["host-1:eth1", "leaf-1:eth3"]
+    - endpoints: ["host-2:eth1", "leaf-2:eth3"]
+    - endpoints: ["host-3:eth1", "leaf-3:eth3"]
+
+# IP Addressing Plan:
+#
+# Loopbacks (VTEP source):
+#   Spine-1: 10.255.0.1/32     Spine-2: 10.255.0.2/32
+#   Leaf-1:  10.255.1.1/32     Leaf-2:  10.255.1.2/32    Leaf-3: 10.255.1.3/32
+#
+# P2P Links (OSPF underlay):
+#   Spine1-Leaf1: 10.0.1.0/31   Spine1-Leaf2: 10.0.1.2/31   Spine1-Leaf3: 10.0.1.4/31
+#   Spine2-Leaf1: 10.0.2.0/31   Spine2-Leaf2: 10.0.2.2/31   Spine2-Leaf3: 10.0.2.4/31
+#
+# VLANs / VNIs:
+#   VLAN 100 (Users)  → VNI 10100, Gateway 10.100.0.1/24
+#   VLAN 200 (Servers) → VNI 10200, Gateway 10.200.0.1/24
+#   VLAN 999 (L3VNI)  → VNI 50001, VRF TENANT-A
+#
+# Host IPs:
+#   Host-1: 10.100.0.10/24 (VLAN 100, Leaf-1)
+#   Host-2: 10.100.0.20/24 (VLAN 100, Leaf-2)
+#   Host-3: 10.200.0.30/24 (VLAN 200, Leaf-3)
+#
+# Usage:
+#   sudo containerlab deploy -t topology.yml
+#   sudo containerlab destroy -t topology.yml

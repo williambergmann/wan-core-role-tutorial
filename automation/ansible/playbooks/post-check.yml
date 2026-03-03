@@ -1,0 +1,87 @@
+# Post-Change State Capture & Diff — Captures state AFTER change and compares
+# Usage: ansible-playbook playbooks/post-check.yml -e "change_id=CR1234"
+#
+# Requires: pre-check.yml was already run with the same change_id
+---
+- name: Post-Change State Capture & Diff
+  hosts: all_network
+  gather_facts: no
+
+  vars:
+    change_id: "{{ change_id | default('manual') }}"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    state_dir: "{{ playbook_dir }}/../state"
+
+  tasks:
+    - name: Capture routing state (post)
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip route vrf all
+          - show ip route summary vrf all
+          - show bgp l2vpn evpn summary
+          - show bgp ipv4 unicast summary
+          - show ip ospf neighbor
+      register: routing_state
+
+    - name: Capture overlay state (post)
+      cisco.nxos.nxos_command:
+        commands:
+          - show nve peers
+          - show nve vni
+          - show l2route evpn mac all
+          - show vrf
+      register: overlay_state
+
+    - name: Capture interface state (post)
+      cisco.nxos.nxos_command:
+        commands:
+          - show interface brief
+          - show interface counters errors
+          - show bfd neighbors
+      register: interface_state
+
+    - name: Capture ARP/MAC state (post)
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip arp vrf all
+          - show mac address-table
+      register: l2_state
+
+    - name: Save post-change state to JSON
+      delegate_to: localhost
+      copy:
+        content: |
+          {
+            "hostname": "{{ inventory_hostname }}",
+            "change_id": "{{ change_id }}",
+            "timestamp": "{{ timestamp }}",
+            "phase": "post",
+            "routing": {{ routing_state.stdout | to_json }},
+            "overlay": {{ overlay_state.stdout | to_json }},
+            "interfaces": {{ interface_state.stdout | to_json }},
+            "l2": {{ l2_state.stdout | to_json }}
+          }
+        dest: "{{ state_dir }}/post_{{ change_id }}_{{ inventory_hostname }}.json"
+
+    - name: Compare pre vs post — route count
+      delegate_to: localhost
+      shell: |
+        PRE=$(cat {{ state_dir }}/pre_{{ change_id }}_{{ inventory_hostname }}.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['routing'][1])" 2>/dev/null || echo "NO PRE-CHECK FOUND")
+        POST=$(echo '{{ routing_state.stdout[1] }}')
+        echo "=== {{ inventory_hostname }} Route Summary ==="
+        echo "PRE:  $PRE"
+        echo "POST: $POST"
+      register: diff_result
+      changed_when: false
+
+    - name: Display diff
+      debug:
+        msg: "{{ diff_result.stdout_lines }}"
+
+    - name: Summary
+      debug:
+        msg: >
+          Post-check complete for {{ inventory_hostname }}.
+          Compare files:
+            pre_{{ change_id }}_{{ inventory_hostname }}.json
+            post_{{ change_id }}_{{ inventory_hostname }}.json

@@ -1,0 +1,53 @@
+# Deploy BGP EVPN Overlay — Configures BGP with l2vpn evpn on fabric
+# Usage: ansible-playbook playbooks/deploy-overlay.yml
+---
+- name: Deploy BGP EVPN Overlay
+  hosts: fabric
+  gather_facts: no
+
+  tasks:
+    - name: Enable required features
+      cisco.nxos.nxos_feature:
+        feature: "{{ item }}"
+        state: enabled
+      loop:
+        - bgp
+        - nv overlay
+        - vn-segment-vlan-based
+        - interface-vlan
+        - fabric forwarding
+
+    - name: Enable EVPN control plane
+      cisco.nxos.nxos_config:
+        lines:
+          - nv overlay evpn
+
+    - name: Configure BGP process
+      cisco.nxos.nxos_config:
+        lines:
+          - router-id {{ rid }}
+        parents: router bgp {{ asn }}
+
+    - name: Configure BGP neighbors (spines as RR)
+      cisco.nxos.nxos_config:
+        lines:
+          - remote-as {{ asn }}
+          - update-source loopback0
+          - address-family l2vpn evpn
+          - "  send-community both"
+          - "  {% if bgp_role == 'route_reflector' %}route-reflector-client{% endif %}"
+        parents:
+          - router bgp {{ asn }}
+          - "neighbor {{ item }}"
+      loop: "{{ bgp_neighbors | default([]) }}"
+      when: bgp_neighbors is defined
+
+    - name: Verify BGP EVPN summary
+      cisco.nxos.nxos_command:
+        commands:
+          - show bgp l2vpn evpn summary
+      register: bgp_output
+
+    - name: Display BGP state
+      debug:
+        msg: "{{ bgp_output.stdout_lines }}"

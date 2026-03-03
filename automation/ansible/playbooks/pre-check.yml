@@ -1,0 +1,77 @@
+# Pre-Change State Capture — Captures full device state before a change
+# Usage: ansible-playbook playbooks/pre-check.yml -e "change_id=CR1234"
+#
+# Output: saves state to ./state/pre_<change_id>_<hostname>.json
+---
+- name: Pre-Change State Capture
+  hosts: all_network
+  gather_facts: no
+
+  vars:
+    change_id: "{{ change_id | default('manual') }}"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    state_dir: "{{ playbook_dir }}/../state"
+
+  tasks:
+    - name: Create state directory
+      delegate_to: localhost
+      run_once: true
+      file:
+        path: "{{ state_dir }}"
+        state: directory
+
+    - name: Capture routing state
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip route vrf all
+          - show ip route summary vrf all
+          - show bgp l2vpn evpn summary
+          - show bgp ipv4 unicast summary
+          - show ip ospf neighbor
+      register: routing_state
+
+    - name: Capture overlay state
+      cisco.nxos.nxos_command:
+        commands:
+          - show nve peers
+          - show nve vni
+          - show l2route evpn mac all
+          - show vrf
+      register: overlay_state
+
+    - name: Capture interface state
+      cisco.nxos.nxos_command:
+        commands:
+          - show interface brief
+          - show interface counters errors
+          - show bfd neighbors
+      register: interface_state
+
+    - name: Capture ARP/MAC state
+      cisco.nxos.nxos_command:
+        commands:
+          - show ip arp vrf all
+          - show mac address-table
+      register: l2_state
+
+    - name: Save state to JSON
+      delegate_to: localhost
+      copy:
+        content: |
+          {
+            "hostname": "{{ inventory_hostname }}",
+            "change_id": "{{ change_id }}",
+            "timestamp": "{{ timestamp }}",
+            "phase": "pre",
+            "routing": {{ routing_state.stdout | to_json }},
+            "overlay": {{ overlay_state.stdout | to_json }},
+            "interfaces": {{ interface_state.stdout | to_json }},
+            "l2": {{ l2_state.stdout | to_json }}
+          }
+        dest: "{{ state_dir }}/pre_{{ change_id }}_{{ inventory_hostname }}.json"
+
+    - name: Summary
+      debug:
+        msg: >
+          Pre-check complete for {{ inventory_hostname }}.
+          State saved to pre_{{ change_id }}_{{ inventory_hostname }}.json

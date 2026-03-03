@@ -1,0 +1,28 @@
+# Leaf-specific variables
+---
+bgp_role: client
+is_vtep: true
+
+# EVPN/VXLAN
+anycast_gw_mac: "0000.5e00.0101"
+
+# VRFs
+vrfs:
+  - name: TENANT-A
+    vni: 50001
+    rd_suffix: 1
+    rt: "65000:50001"
+    transit_vlan: 999
+
+# VLANs / L2VNIs
+vlans:
+  - id: 100
+    name: Users
+    vni: 10100
+    vrf: TENANT-A
+    gateway: 10.100.0.1/24
+  - id: 200
+    name: Servers
+    vni: 10200
+    vrf: TENANT-A
+    gateway: 10.200.0.1/24

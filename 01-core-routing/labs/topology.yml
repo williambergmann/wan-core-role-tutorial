@@ -1,0 +1,92 @@
+# Module 01: Core Routing — Containerlab Topology
+# 5-router WAN topology for BGP/OSPF practice
+#
+# Topology:
+#   AS 65001: R1 (border) + R4 (internal)
+#   AS 65002: R2 (WAN core/transit) + R5 (internal)
+#   AS 65003: R3 (remote site border)
+#
+#        R1---eBGP---R2---eBGP---R3
+#        |           |
+#       iBGP        iBGP
+#        |           |
+#        R4          R5
+
+name: wan-core-bgp
+
+topology:
+  kinds:
+    linux:
+      image: vrnetlab/vr-nxos:9.3.10 # Cisco NX-OS 9000v
+      # Alternative: use cEOS for faster boot
+      # image: ceos:4.28.3M
+
+  nodes:
+    # AS 65001 — Site A
+    r1:
+      kind: linux
+      mgmt-ipv4: 172.20.20.11
+      labels:
+        role: border-gw
+        site: site-a
+        asn: "65001"
+
+    r4:
+      kind: linux
+      mgmt-ipv4: 172.20.20.14
+      labels:
+        role: internal
+        site: site-a
+        asn: "65001"
+
+    # AS 65002 — WAN Core / Transit
+    r2:
+      kind: linux
+      mgmt-ipv4: 172.20.20.12
+      labels:
+        role: wan-core
+        site: wan-core
+        asn: "65002"
+
+    r5:
+      kind: linux
+      mgmt-ipv4: 172.20.20.15
+      labels:
+        role: internal
+        site: wan-core
+        asn: "65002"
+
+    # AS 65003 — Site B
+    r3:
+      kind: linux
+      mgmt-ipv4: 172.20.20.13
+      labels:
+        role: border-gw
+        site: site-b
+        asn: "65003"
+
+  links:
+    # eBGP links
+    - endpoints: ["r1:eth1", "r2:eth1"] # R1-R2: 10.0.12.0/30
+    - endpoints: ["r2:eth2", "r3:eth1"] # R2-R3: 10.0.23.0/30
+
+    # iBGP links
+    - endpoints: ["r1:eth2", "r4:eth1"] # R1-R4: 10.0.14.0/30
+    - endpoints: ["r2:eth3", "r5:eth1"] # R2-R5: 10.0.25.0/30
+
+
+# IP Addressing Plan:
+#
+# Loopbacks:
+#   R1: 1.1.1.1/32    R2: 2.2.2.2/32    R3: 3.3.3.3/32
+#   R4: 4.4.4.4/32    R5: 5.5.5.5/32
+#
+# P2P Links:
+#   R1-R2: 10.0.12.1/30 — 10.0.12.2/30
+#   R2-R3: 10.0.23.1/30 — 10.0.23.2/30
+#   R1-R4: 10.0.14.1/30 — 10.0.14.2/30
+#   R2-R5: 10.0.25.1/30 — 10.0.25.2/30
+#
+# Usage:
+#   sudo containerlab deploy -t topology.yml
+#   sudo containerlab destroy -t topology.yml

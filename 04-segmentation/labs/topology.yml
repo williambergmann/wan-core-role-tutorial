@@ -1,0 +1,133 @@
+# Module 04: Segmentation — Containerlab Topology
+# Multi-VRF fabric for PCI-DSS zone practice
+#
+# Topology:
+#   2 Spines + 3 Leaves + 1 Firewall + 4 Hosts (one per VRF)
+#
+#        [Spine-1]----[Spine-2]
+#        / |    \     / |    \
+#   [Leaf1] [Leaf2] [Leaf3]
+#      |       |       |    \
+#   [H-CDE] [H-Corp] [H-DMZ] [FW]
+#
+# VRFs:
+#   CDE (VNI 50001) — Payment processing
+#   Corporate (VNI 50002) — User workstations
+#   DMZ (VNI 50003) — Internet-facing
+#   Management (VNI 50004) — NOC/monitoring
+
+name: segmentation-lab
+
+topology:
+  kinds:
+    linux:
+      image: vrnetlab/vr-nxos:9.3.10
+
+  nodes:
+    spine-1:
+      kind: linux
+      mgmt-ipv4: 172.20.20.101
+      labels:
+        role: spine
+
+    spine-2:
+      kind: linux
+      mgmt-ipv4: 172.20.20.102
+      labels:
+        role: spine
+
+    leaf-1:
+      kind: linux
+      mgmt-ipv4: 172.20.20.111
+      labels:
+        role: leaf
+        vrfs: "CDE"
+
+    leaf-2:
+      kind: linux
+      mgmt-ipv4: 172.20.20.112
+      labels:
+        role: leaf
+        vrfs: "Corporate"
+
+    leaf-3:
+      kind: linux
+      mgmt-ipv4: 172.20.20.113
+      labels:
+        role: service-leaf
+        vrfs: "DMZ,Management"
+
+    # Firewall (Linux container simulating FW)
+    firewall:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.130
+      labels:
+        role: firewall
+
+    # Hosts — one per VRF/zone
+    host-cde:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.201
+      labels:
+        vrf: CDE
+        ip: "10.100.0.10/24"
+
+    host-corp:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.202
+      labels:
+        vrf: Corporate
+        ip: "10.102.0.10/24"
+
+    host-dmz:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.203
+      labels:
+        vrf: DMZ
+        ip: "10.103.0.10/24"
+
+    host-mgmt:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.20.20.204
+      labels:
+        vrf: Management
+        ip: "10.104.0.10/24"
+
+  links:
+    # Spine-Leaf mesh
+    - endpoints: ["spine-1:eth1", "leaf-1:eth1"]
+    - endpoints: ["spine-1:eth2", "leaf-2:eth1"]
+    - endpoints: ["spine-1:eth3", "leaf-3:eth1"]
+    - endpoints: ["spine-2:eth1", "leaf-1:eth2"]
+    - endpoints: ["spine-2:eth2", "leaf-2:eth2"]
+    - endpoints: ["spine-2:eth3", "leaf-3:eth2"]
+
+    # Hosts
+    - endpoints: ["host-cde:eth1", "leaf-1:eth3"]
+    - endpoints: ["host-corp:eth1", "leaf-2:eth3"]
+    - endpoints: ["host-dmz:eth1", "leaf-3:eth3"]
+    - endpoints: ["host-mgmt:eth1", "leaf-3:eth4"]
+
+    # Firewall (dual-homed to service leaf)
+    - endpoints: ["firewall:eth1", "leaf-3:eth5"]     # CDE-side interface
+    - endpoints: ["firewall:eth2", "leaf-3:eth6"]     # Mgmt-side interface
+
+# VRF / VNI Plan:
+#   VRF CDE:        L3VNI 50001, VLAN 100 → VNI 10100, GW 10.100.0.1/24
+#   VRF Corporate:  L3VNI 50002, VLAN 102 → VNI 10102, GW 10.102.0.1/24
+#   VRF DMZ:        L3VNI 50003, VLAN 103 → VNI 10103, GW 10.103.0.1/24
+#   VRF Management: L3VNI 50004, VLAN 104 → VNI 10104, GW 10.104.0.1/24
+#
+# Route Leaking:
+#   Management → CDE (monitoring, through firewall)
+#   CDE ↔ Corporate: NEVER (PCI-DSS)
+#   CDE ↔ DMZ: NEVER (PCI-DSS)
+#
+# Usage:
+#   sudo containerlab deploy -t topology.yml
+#   sudo containerlab destroy -t topology.yml
