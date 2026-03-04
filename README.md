@@ -41,6 +41,7 @@ A focused, AI-augmented learning toolkit that prepares you for the WAN Core Engi
 | [automation/](./automation/)         | Ansible playbooks, Python scripts, **AI prompt library** |
 | [reference/](./reference/)           | CLI cheatsheets, glossary, vendor comparison             |
 | [interview-prep/](./interview-prep/) | 30 Q&A, scenario practice, Day-1 playbook                |
+| [onboarding/](./onboarding/)         | Northstar contractor onboarding guide, learning resources |
 
 ---
 
