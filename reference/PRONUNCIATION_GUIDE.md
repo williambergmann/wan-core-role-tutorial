@@ -44,17 +44,33 @@
 
 ## Hardware & Platforms
 
-| Term             | ✅ Say This     | Notes                                                    |
-| ---------------- | --------------- | -------------------------------------------------------- |
-| **Nexus**        | "NEX-us"        | The Cisco switch platform                                |
-| **Catalyst**     | "CAT-uh-list"   | Cisco campus switches                                    |
-| **Arista**       | "uh-RIST-uh"    | Competitor switch vendor                                 |
-| **Juniper**      | "JOO-nih-per"   | Competitor vendor                                        |
-| **Junos**        | "JOO-nohs"      | Juniper's OS                                             |
-| **Versa**        | "VER-suh"       | Fiserv's SD-WAN platform                                 |
-| **Containerlab** | "container-lab" | Not "con-TAIN-er-lab" — equal stress                     |
-| **Palo Alto**    | "Palo" (PAH-lo) | Just "Palo" — never the full name in casual conversation |
-| **Fortinet**     | "FOR-tih-net"   | Their firewall is "FortiGate" = "FOR-tih-gate"           |
+| Term             | ✅ Say This                       | Notes                                                    |
+| ---------------- | --------------------------------- | -------------------------------------------------------- |
+| **Nexus**        | "NEX-us"                          | The Cisco switch platform                                |
+| **Catalyst**     | "CAT-uh-list"                     | Cisco campus switches                                    |
+| **Arista**       | "uh-RIST-uh"                      | Competitor switch vendor                                 |
+| **Juniper**      | "JOO-nih-per"                     | Competitor vendor                                        |
+| **Junos**        | "JOO-nohs"                        | Juniper's OS                                             |
+| **Versa**        | "VER-suh"                         | Fiserv's SD-WAN platform                                 |
+| **Containerlab** | "container-lab"                   | Not "con-TAIN-er-lab" — equal stress                     |
+| **Palo Alto**    | "Palo" (PAH-lo)                   | Just "Palo" — never the full name in casual conversation |
+| **Fortinet**     | "FOR-tih-net"                     | Their firewall is "FortiGate" = "FOR-tih-gate"           |
+| **ASR**          | "ay-ess-are"                      | Cisco Aggregation Services Router                        |
+| **ISR**          | "eye-ess-are"                     | Cisco Integrated Services Router                         |
+| **Viptela**      | "vip-TELL-uh"                     | Cisco's SD-WAN platform (acquired). Or just say "SD-WAN" |
+| **OMP**          | "oh-em-pee"                       | Overlay Management Protocol (Viptela-specific)           |
+| **OTV**          | "oh-tee-vee"                      | Overlay Transport Virtualization — legacy DCI tech       |
+| **PA-3220**      | "P-A thirty-two-twenty"           | Palo model. Say "P-A" not "Pah" for model numbers        |
+| **PA-5220**      | "P-A fifty-two-twenty"            | Larger Palo cluster model                                |
+| **Nexus 93180**  | "Nexus ninety-three-one-eighty"   | Common leaf switch                                       |
+| **Nexus 9508**   | "Nexus ninety-five-oh-eight"      | Modular spine chassis                                    |
+| **Arista 7280R** | "uh-RIST-uh seventy-two-eighty-R" | Arista leaf                                              |
+| **Arista 7500**  | "uh-RIST-uh seventy-five-hundred" | Arista spine chassis                                     |
+| **Catalyst 9K**  | "Cat nine-K" or "Cat 9K"          | Casual for campus switches                               |
+| **Nexus 5K/7K**  | "Nexus five-K / seven-K"          | Legacy DC — say "five-K" not "five thousand"             |
+| **DIA**          | "dee-eye-ay"                      | Direct Internet Access — a WAN transport type            |
+| **L2VPN**        | "el-two-vee-pee-en"               | Layer 2 VPN                                              |
+| **STP**          | "ess-tee-pee"                     | Spanning Tree Protocol                                   |
 
 ## Concepts & Design Terms
 

@@ -104,6 +104,7 @@ These phrases appear across the scripts above. They're the building blocks — y
 | IS-IS               | "eye-ess eye-ess"                         |
 | L2VNI / L3VNI       | "el-two-vee-en-eye / el-three-vee-en-eye" |
 | VTEP                | "vee-tep" (rhymes with step)              |
+| VRF                 | "virf" (rhymes with turf)                 |
 | IRB                 | "eye-are-bee"                             |
 | ECMP                | "ee-see-em-pee"                           |
 | STP                 | "ess-tee-pee"                             |
@@ -113,3 +114,61 @@ These phrases appear across the scripts above. They're the building blocks — y
 | RIB                 | "rib" (rhymes with bib)                   |
 | FIB                 | "fib" (rhymes with rib)                   |
 | ARP                 | "arp" (say it as a word)                  |
+| OTV                 | "oh-tee-vee"                              |
+| OMP                 | "oh-em-pee"                               |
+| Viptela             | "vip-TELL-uh"                             |
+| ASR                 | "ay-ess-are"                              |
+| ISR                 | "eye-ess-are"                             |
+| PA-3220             | "P-A thirty-two-twenty"                   |
+| Palo Alto           | just "Palo" (PAH-lo)                      |
+| Nexus 93180         | "Nexus ninety-three-one-eighty"           |
+| Catalyst 9K         | "Cat nine-K"                              |
+| Arista 7280R        | "uh-RIST-uh seventy-two-eighty-R"         |
+
+---
+
+## War Story — Full Project Walkthrough
+
+This is the deep version. Use this when someone asks _"Tell me about a large project you've worked on"_ or _"What's the most complex environment you've dealt with?"_
+
+Don't recite the whole thing — know it well enough to pull from any section depending on where the conversation goes.
+
+### The Script
+
+> _"One of the larger environments I worked on involved redesigning a mixed campus, data center, and WAN architecture that had grown organically over time. The legacy design relied heavily on Cisco Nexus five-K / seven-K aggregation layers and stretched Layer-2 domains across data centers, with OTV and L2VPN used for DCI in some regions. Campus networks were primarily Cat nine-K and Juniper EX access layers, while WAN connectivity was provided through Cisco ISR and ASR routers terminating MPLS and DIA circuits._
+>
+> _The biggest issues we were seeing were large STP domains, limited segmentation scalability, and unpredictable failover during maintenance events, so the goal was to move toward a fully routed architecture using EVPN-VXLAN fabrics integrated with the WAN core._
+>
+> _For the new data center design we implemented a spine-leaf fabric using Cisco Nexus ninety-three-one-eighty-YC and Arista seventy-two-eighty-R leaf switches with Nexus ninety-five-oh-eight and Arista seventy-five-hundred spines. The underlay routing domain used eye-ess eye-ess with BFD enabled for fast convergence, advertising loopback interfaces for VTEP reachability and providing ECMP forwarding across the spine layer._
+>
+> _The overlay was built on MP-BGP EVPN, where each leaf acted as a VTEP and advertised MAC/IP reachability using Type-2 EVPN routes. Gateway functionality moved into the leaf layer using Anycast Gateway with symmetric IRB routing, which allowed us to collapse distribution layers and eliminate spanning tree dependencies._
+>
+> _Segmentation was implemented through EVPN L2VNI and L3VNI constructs mapped to VIRFs, allowing application environments to remain isolated while still enabling inter-VIRF routing through controlled policy boundaries._
+>
+> _At the WAN edge we integrated the fabric with multi-homed BGP edge routing running on Cisco ASR platforms and regional SD-WAN hubs. Fabric border nodes established eBGP peering with WAN routers, and we implemented strict routing policy controls using prefix-lists, BGP communities, and route-maps to control route propagation between EVPN VIRFs and the WAN domain._
+>
+> _Security enforcement was handled through Palo P-A-thirty-two-twenty and P-A-fifty-two-twenty clusters, where VIRF segmentation inside the fabric aligned with firewall zone policies. East-west traffic within the fabric stayed local when possible, while north-south flows passed through firewall inspection points._
+>
+> _Branch connectivity was provided through Cisco Viptela SD-WAN, with routes learned through OMP redistributed into the BGP routing domain at regional hubs. Careful route filtering and tagging ensured OMP-learned routes didn't create feedback loops between SD-WAN overlays and the core routing fabric._
+>
+> _Before deploying to production we validated the design in a staging lab where we tested EVPN route scale, ECMP path distribution, VTEP failover behavior, and WAN edge reconvergence during link loss scenarios._
+>
+> _The migration itself was done incrementally. We stood up the EVPN fabric in parallel with the legacy network and gradually shifted workloads by moving gateway functions to the new leaf layer while controlling route advertisement into the WAN core._
+>
+> _Once complete we were able to retire several legacy technologies including OTV and large Layer-2 domains, and the network transitioned into a deterministic Layer-3 routed architecture where ECMP forwarding, BGP policy, and EVPN control plane behavior governed traffic flow instead of spanning tree."_
+
+### What Each Paragraph Demonstrates
+
+| Paragraph | Topic              | What it shows                                               |
+| --------- | ------------------ | ----------------------------------------------------------- |
+| 1         | Legacy environment | You know the old stuff — Nexus 5K/7K, OTV, ISR/ASR          |
+| 2         | Problem statement  | You identify root causes, not just symptoms                 |
+| 3         | Underlay design    | You know spine-leaf, IS-IS, BFD, ECMP                       |
+| 4         | Overlay design     | You know EVPN, VTEP, Type-2 routes, Anycast GW, IRB         |
+| 5         | Segmentation       | You know L2VNI/L3VNI/VRF — the compliance layer             |
+| 6         | WAN integration    | You know eBGP edge, policy, communities, route-maps         |
+| 7         | Security           | You know Palo, zone-based policy, east-west vs north-south  |
+| 8         | SD-WAN             | You know Viptela/OMP and the redistribution risks           |
+| 9         | Validation         | You test before production — not a cowboy                   |
+| 10        | Migration          | You do phased cutovers — you've done this in real life      |
+| 11        | Outcome            | You retired legacy tech and delivered a modern architecture |
