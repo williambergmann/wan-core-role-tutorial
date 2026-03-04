@@ -24,7 +24,7 @@
 | **NX-OS**   | "en-ex-oh-ess"              | "nexus" (that's the hardware) | NX-OS is the OS, Nexus is the switch                 |
 | **PCI-DSS** | "pee-see-eye dee-ess-ess"   | "pee-see-dee-ess-ess"         | Two parts: PCI + DSS                                 |
 | **MPLS**    | "em-pee-el-ess"             | "mipples"                     | Spell it out                                         |
-| **IS-IS**   | "eye-ess eye-ess"           | "isis" (like the name)        | Two separate pairs                                   |
+| **IS-IS**   | "eye-ess eye-ess"           | "isis" (like the name)        | Say each letter pair separately: "eye-ess, eye-ess"  |
 | **HSRP**    | "aitch-ess-are-pee"         | "hisserp"                     | Spell it out                                         |
 | **VRRP**    | "vee-are-are-pee"           | "verp"                        | Spell it out                                         |
 | **GRE**     | "gee-are-ee"                | "gree"                        | Spell it out                                         |
