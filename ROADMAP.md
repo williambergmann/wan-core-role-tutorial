@@ -6,28 +6,74 @@
 
 ---
 
+## Resources
+
+### INE Courses (from trainer Patrick Hayes)
+
+| #   | Course                         | Instructor    | Duration | Link                                                                                              |
+| --- | ------------------------------ | ------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| 1   | WAN Technologies for Beginners | —             | ~2.5 hrs | [INE](https://my.ine.com/ITEssentials/courses/dc39a9d0/wan-technologies-for-beginners)            |
+| 2   | Data Center Network Design     | Brian McGahan | ~6 hrs   | [INE](https://my.ine.com/Networking/courses/a9ba9fb9/data-center-network-design)                  |
+| 3   | Applying DC Routing Protocols  | Brian McGahan | ~5 hrs   | [INE](https://my.ine.com/Networking/courses/e81fd034/applying-data-center-routing-protocols)      |
+| 4   | VXLAN on Nexus NX-OS           | Brian McGahan | ~6 hrs   | [INE](https://my.ine.com/Networking/courses/f2e7ffce/virtual-extensible-lan-vxlan-on-nexus-nx-os) |
+
+### This Tutorial
+
+Modules 00–07 + automation toolkit + reference docs + interview prep
+
+---
+
 ## Pre-Start Ramp (March 3–8)
 
-### Days 1–2: Core Protocols
+### Day 1 (Mar 3) — WAN Foundations ✅
 
-| Day           | Module                                | Focus                                | Time    |
-| ------------- | ------------------------------------- | ------------------------------------ | ------- |
-| Day 1 (Mar 3) | [01 Core Routing](./01-core-routing/) | BGP fundamentals + policy            | 4-5 hrs |
-| Day 2 (Mar 4) | [01 Core Routing](./01-core-routing/) | OSPF underlay + BGP+OSPF interaction | 4-5 hrs |
+- Tutorial: Day 1 Study Session (BGP mechanics, path selection, WAN patterns)
+- Tutorial: Day 1 Simulations (troubleshooting, CAB review, operational quiz)
 
-### Days 3–4: Fabric & WAN
+### Day 2 (Mar 4) — WAN Technologies + DC Routing Intro
 
-| Day           | Module                                                              | Focus                                        | Time    |
-| ------------- | ------------------------------------------------------------------- | -------------------------------------------- | ------- |
-| Day 3 (Mar 5) | [02 EVPN/VXLAN](./02-evpn-vxlan/)                                   | VXLAN encap, EVPN route types, Symmetric IRB | 4-5 hrs |
-| Day 4 (Mar 6) | [03 WAN DCI](./03-wan-dci/) + [04 Segmentation](./04-segmentation/) | Multi-site DCI + VRF/PCI-DSS segmentation    | 4-5 hrs |
+| Block       | Time    | Activity                                                      |
+| ----------- | ------- | ------------------------------------------------------------- |
+| 📺 INE      | 2.5 hrs | **WAN Technologies for Beginners** (full course)              |
+| 📺 INE      | 1.5 hrs | **Applying DC Routing Protocols** — OSPF + BGP + BFD sections |
+| 📖 Tutorial | 30 min  | Module 01 README + `reference/SHOW_COMMANDS.md`               |
+| ⌨️ Practice | 30 min  | Match INE demos to your show command cheatsheet               |
 
-### Days 5–6: Operations & Readiness
+### Day 3 (Mar 5) — DC Design + EVPN/VXLAN Intro
 
-| Day           | Module                                                                            | Focus                                 | Time    |
-| ------------- | --------------------------------------------------------------------------------- | ------------------------------------- | ------- |
-| Day 5 (Mar 7) | [05 Validation](./05-validation-testing/) + [06 Migration](./06-migration-ops/)   | Test plans, runbooks, pre/post checks | 4-5 hrs |
-| Day 6 (Mar 8) | [07 Troubleshooting](./07-troubleshooting/) + [Interview Prep](./interview-prep/) | Breakfix practice + Day 1 prep        | 3-4 hrs |
+| Block       | Time    | Activity                                                              |
+| ----------- | ------- | --------------------------------------------------------------------- |
+| 📺 INE      | 1.5 hrs | **Applying DC Routing Protocols** — vPC, FHRPs, STP sections          |
+| 📺 INE      | 2 hrs   | **Data Center Network Design** — L2/L3 design, vPC, VXLAN EVPN design |
+| 📖 Tutorial | 30 min  | Module 02 README (EVPN/VXLAN)                                         |
+| 📝 Quiz     | 30 min  | Module 02 Quiz (15 questions)                                         |
+
+### Day 4 (Mar 6) — VXLAN Deep Dive ⭐
+
+| Block       | Time   | Activity                                                                                  |
+| ----------- | ------ | ----------------------------------------------------------------------------------------- |
+| 📺 INE      | 3 hrs  | **VXLAN on Nexus NX-OS** — First half (encap, flood/learn, BGP EVPN, inter-VXLAN routing) |
+| 📖 Tutorial | 30 min | Module 02 README + `reference/EVPN_ROUTE_TYPES.md`                                        |
+| ⌨️ Practice | 30 min | Match Brian's packet captures to route type descriptions                                  |
+
+### Day 5 (Mar 7) — VXLAN + WAN DCI + Segmentation
+
+| Block       | Time   | Activity                                                                  |
+| ----------- | ------ | ------------------------------------------------------------------------- |
+| 📺 INE      | 3 hrs  | **VXLAN on Nexus NX-OS** — Second half (vPC, HA, external L3, IRB review) |
+| 📺 INE      | 1 hr   | **DC Network Design** — VRF Design + Disaster Recovery                    |
+| 📖 Tutorial | 30 min | Module 03 (WAN DCI) + Module 04 (Segmentation)                            |
+| 📝 Quiz     | 30 min | Module 03 Quiz (WAN DCI)                                                  |
+
+### Day 6 (Mar 8) — Operations + Troubleshooting + Readiness
+
+| Block             | Time   | Activity                                             |
+| ----------------- | ------ | ---------------------------------------------------- |
+| 📖 Tutorial       | 1 hr   | Module 05 (Validation) + Module 06 (Migration Ops)   |
+| 📖 Tutorial       | 1 hr   | Module 07 (Troubleshooting) + 3–4 breakfix scenarios |
+| 🌳 Decision Trees | 30 min | Walk through all 5 decision tree flowcharts          |
+| 📖 Prep           | 30 min | `interview-prep/DAY_ONE_PLAYBOOK.md`                 |
+| 📝 Quiz           | 30 min | Module 04 Quiz (Segmentation + PCI-DSS)              |
 
 ---
 
@@ -38,7 +84,7 @@
 - [ ] Get lab access — ask immediately
 - [ ] Read existing design docs and runbooks
 - [ ] Shadow a fabric onboarding or change window
-- [ ] Run `automation/ansible/playbooks/health-check.yml` in lab to learn the environment
+- [ ] Run `automation/ansible/playbooks/health-check.yml` in lab
 - [ ] Start using AI prompts for documentation tasks
 
 ### Week 2 (Mar 16–20): Contribute
@@ -61,11 +107,10 @@
 
 Each study day has:
 
-- **🎯 Objective** — What you'll be able to DO by end of day
-- **📖 Study** — Read the module README (1–2 hours)
-- **⌨️ Hands-On** — Lab work with actual CLI (2–3 hours)
-- **📝 Deliverable** — Something tangible you produce
-- **✅ Checkpoint** — How you know you're ready to move on
+- **📺 Watch** — INE video sections (with notes)
+- **📖 Study** — Tutorial module README (cross-reference with INE)
+- **⌨️ Hands-On** — Commands, configs, quizzes
+- **✅ Checkpoint** — Can you explain the concept in a meeting?
 
 ---
 
