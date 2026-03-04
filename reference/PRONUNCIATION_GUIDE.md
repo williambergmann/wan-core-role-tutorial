@@ -6,53 +6,55 @@
 
 ## Protocols & Technologies
 
-| Term        | ✅ Say This                 | ❌ Don't Say This             | Notes                                                |
-| ----------- | --------------------------- | ----------------------------- | ---------------------------------------------------- |
-| **OSPF**    | "oh-ess-pee-eff"            | "ospf" as one word            | Always spell it out                                  |
-| **BGP**     | "bee-jee-pee"               | —                             | Always spell it out                                  |
-| **EVPN**    | "ee-vee-pee-en"             | "ev-pin" or "ee-vee-pin"      | Spell out all 4 letters                              |
-| **VXLAN**   | "vee-ex-lan"                | "vixlan" or "vex-lan"         | Three syllables: V-X-LAN                             |
-| **VRF**     | "vee-are-eff"               | "verf"                        | Spell it out, never say it as a word                 |
-| **VTEP**    | "vee-tep"                   | "vee-tee-ee-pee"              | Say it as a word — rhymes with "step"                |
-| **VNI**     | "vee-en-eye"                | "vinny"                       | Spell out all 3 letters                              |
-| **NVE**     | "en-vee-ee"                 | "nevvy"                       | Spell it out                                         |
-| **BFD**     | "bee-eff-dee"               | —                             | Always spell it out                                  |
-| **IRB**     | "eye-are-bee"               | "erb"                         | Spell it out                                         |
-| **ECMP**    | "ee-see-em-pee"             | "ee-comp"                     | Spell it out                                         |
-| **SVI**     | "ess-vee-eye"               | "svee"                        | Spell it out                                         |
-| **vPC**     | "vee-pee-see"               | "vee-pc"                      | Spell it out, lowercase v                            |
-| **NX-OS**   | "en-ex-oh-ess"              | "nexus" (that's the hardware) | NX-OS is the OS, Nexus is the switch                 |
-| **PCI-DSS** | "pee-see-eye dee-ess-ess"   | "pee-see-dee-ess-ess"         | Two parts: PCI + DSS                                 |
-| **MPLS**    | "em-pee-el-ess"             | "mipples"                     | Spell it out                                         |
-| **IS-IS**   | "eye-ess eye-ess"           | "isis" (like the name)        | Say each letter pair separately: "eye-ess, eye-ess"  |
-| **HSRP**    | "aitch-ess-are-pee"         | "hisserp"                     | Spell it out                                         |
-| **VRRP**    | "vee-are-are-pee"           | "verp"                        | Spell it out                                         |
-| **GRE**     | "gee-are-ee"                | "gree"                        | Spell it out                                         |
-| **QoS**     | "cue-oh-ess"                | "kwoss"                       | Spell it out                                         |
-| **ACL**     | "ay-see-el" or "ackle"      | —                             | Both are acceptable; "ackle" is more common verbally |
-| **CIDR**    | "cider"                     | "see-eye-dee-are"             | Say it like the drink                                |
-| **LSDB**    | "el-ess-dee-bee"            | "liz-dub"                     | Spell it out                                         |
-| **NLRI**    | "en-el-are-eye"             | —                             | Spell it out                                         |
-| **AFI**     | "ay-eff-eye"                | "affie"                       | Spell it out — Address Family Identifier             |
-| **SAFI**    | "saffy" or "ess-ay-eff-eye" | —                             | Both work; "saffy" is more common                    |
-| **RT**      | "are-tee"                   | —                             | Route Target                                         |
-| **RD**      | "are-dee"                   | —                             | Route Distinguisher                                  |
-| **DR**      | "dee-are"                   | —                             | Designated Router (OSPF)                             |
-| **BDR**     | "bee-dee-are"               | —                             | Backup DR                                            |
-| **SPF**     | "ess-pee-eff"               | "spiff"                       | Spell it out — Shortest Path First                   |
-| **LSA**     | "el-ess-ay"                 | —                             | Link-State Advertisement                             |
+| Term        | ✅ Say This                 | ❌ Don't Say This             | Notes                                                       |
+| ----------- | --------------------------- | ----------------------------- | ----------------------------------------------------------- |
+| **OSPF**    | "oh-ess-pee-eff"            | "ospf" as one word            | Always spell it out                                         |
+| **BGP**     | "bee-jee-pee"               | —                             | Always spell it out                                         |
+| **EVPN**    | "ee-vee-pee-en"             | "ev-pin" or "ee-vee-pin"      | Spell out all 4 letters                                     |
+| **VXLAN**   | "vee-ex-lan"                | "vixlan" or "vex-lan"         | Three syllables: V-X-LAN                                    |
+| **VRF**     | "virf" (one syllable)       | "vee-are-eff"                 | Say it as a word — rhymes with "turf". Everyone says "virf" |
+| **VTEP**    | "vee-tep"                   | "vee-tee-ee-pee"              | Say it as a word — rhymes with "step"                       |
+| **VNI**     | "vee-en-eye"                | "vinny"                       | Spell out all 3 letters                                     |
+| **NVE**     | "en-vee-ee"                 | "nevvy"                       | Spell it out                                                |
+| **BFD**     | "bee-eff-dee"               | —                             | Always spell it out                                         |
+| **IRB**     | "eye-are-bee"               | "erb"                         | Spell it out                                                |
+| **ECMP**    | "ee-see-em-pee"             | "ee-comp"                     | Spell it out                                                |
+| **SVI**     | "ess-vee-eye"               | "svee"                        | Spell it out                                                |
+| **vPC**     | "vee-pee-see"               | "vee-pc"                      | Spell it out, lowercase v                                   |
+| **NX-OS**   | "en-ex-oh-ess"              | "nexus" (that's the hardware) | NX-OS is the OS, Nexus is the switch                        |
+| **PCI-DSS** | "pee-see-eye dee-ess-ess"   | "pee-see-dee-ess-ess"         | Two parts: PCI + DSS                                        |
+| **MPLS**    | "em-pee-el-ess"             | "mipples"                     | Spell it out                                                |
+| **IS-IS**   | "eye-ess eye-ess"           | "isis" (like the name)        | Say each letter pair separately: "eye-ess, eye-ess"         |
+| **HSRP**    | "aitch-ess-are-pee"         | "hisserp"                     | Spell it out                                                |
+| **VRRP**    | "vee-are-are-pee"           | "verp"                        | Spell it out                                                |
+| **GRE**     | "gee-are-ee"                | "gree"                        | Spell it out                                                |
+| **QoS**     | "cue-oh-ess"                | "kwoss"                       | Spell it out                                                |
+| **ACL**     | "ay-see-el" or "ackle"      | —                             | Both are acceptable; "ackle" is more common verbally        |
+| **CIDR**    | "cider"                     | "see-eye-dee-are"             | Say it like the drink                                       |
+| **LSDB**    | "el-ess-dee-bee"            | "liz-dub"                     | Spell it out                                                |
+| **NLRI**    | "en-el-are-eye"             | —                             | Spell it out                                                |
+| **AFI**     | "ay-eff-eye"                | "affie"                       | Spell it out — Address Family Identifier                    |
+| **SAFI**    | "saffy" or "ess-ay-eff-eye" | —                             | Both work; "saffy" is more common                           |
+| **RT**      | "are-tee"                   | —                             | Route Target                                                |
+| **RD**      | "are-dee"                   | —                             | Route Distinguisher                                         |
+| **DR**      | "dee-are"                   | —                             | Designated Router (OSPF)                                    |
+| **BDR**     | "bee-dee-are"               | —                             | Backup DR                                                   |
+| **SPF**     | "ess-pee-eff"               | "spiff"                       | Spell it out — Shortest Path First                          |
+| **LSA**     | "el-ess-ay"                 | —                             | Link-State Advertisement                                    |
 
 ## Hardware & Platforms
 
-| Term             | ✅ Say This     | Notes                                |
-| ---------------- | --------------- | ------------------------------------ |
-| **Nexus**        | "NEX-us"        | The Cisco switch platform            |
-| **Catalyst**     | "CAT-uh-list"   | Cisco campus switches                |
-| **Arista**       | "uh-RIST-uh"    | Competitor switch vendor             |
-| **Juniper**      | "JOO-nih-per"   | Competitor vendor                    |
-| **Junos**        | "JOO-nohs"      | Juniper's OS                         |
-| **Versa**        | "VER-suh"       | Fiserv's SD-WAN platform             |
-| **Containerlab** | "container-lab" | Not "con-TAIN-er-lab" — equal stress |
+| Term             | ✅ Say This     | Notes                                                    |
+| ---------------- | --------------- | -------------------------------------------------------- |
+| **Nexus**        | "NEX-us"        | The Cisco switch platform                                |
+| **Catalyst**     | "CAT-uh-list"   | Cisco campus switches                                    |
+| **Arista**       | "uh-RIST-uh"    | Competitor switch vendor                                 |
+| **Juniper**      | "JOO-nih-per"   | Competitor vendor                                        |
+| **Junos**        | "JOO-nohs"      | Juniper's OS                                             |
+| **Versa**        | "VER-suh"       | Fiserv's SD-WAN platform                                 |
+| **Containerlab** | "container-lab" | Not "con-TAIN-er-lab" — equal stress                     |
+| **Palo Alto**    | "Palo" (PAH-lo) | Just "Palo" — never the full name in casual conversation |
+| **Fortinet**     | "FOR-tih-net"   | Their firewall is "FortiGate" = "FOR-tih-gate"           |
 
 ## Concepts & Design Terms
 
